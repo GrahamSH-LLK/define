@@ -44,12 +44,19 @@
 </script>
 
 <div class="container">
-	<header>
-		<h1 class="title">Definition app</h1>
+	<header class="mb-2">
+		<h1 class="title has-text-primary is-2">Definitions</h1>
 	</header>
 	<main>
-		<textarea class="textarea" bind:value={words} />
-		<button class="button is-primary" on:click={check}>Get words</button>
+		<div class="box">
+			<h3 class="title is-5">Add your words</h3>
+			<div class="field">
+				<textarea class="textarea" placeholder="Words, newline separated" bind:value={words} />
+			</div>
+			<div class="field">
+				<button class="button is-primary" on:click={check}>Get definitions</button>
+			</div>
+		</div>
 		<table class="table">
 			<thead
 				><tr
@@ -59,7 +66,10 @@
 			>
 			{#each wordList as word, idx}
 				<tr
-					><td><a target="_blank" href={`https://thesaurus.com/browse/${word.word}`}>{word.word}</a></td>
+					><td
+						><a target="_blank" href={`https://thesaurus.com/browse/${word.word}`}>{word.word}</a
+						></td
+					>
 					<td><input class="input" type="text" bind:value={word.synonyms[0]} /></td>
 					<td><input class="input" type="text" bind:value={word.synonyms[1]} /></td>
 					<td><input class="input" type="text" bind:value={word.antonyms[0]} /></td>
@@ -74,12 +84,12 @@
 					<td
 						><textarea
 							class="textarea"
-							style="max-width: 400px"
+							style="max-width: 400px; min-width: 250px;"
 							bind:value={defList[idx][0].meanings[0].definitions[0].definition}
 						/>
 					</td>
 					<td
-						><textarea class="textarea" style="min-width: 400px" bind:value={word.sentence} />
+						><textarea class="textarea" style="min-width: 250px" bind:value={word.sentence} />
 					</td>
 				</tr>
 			{/each}
@@ -92,4 +102,13 @@
 		overflow: scroll;
 		max-width: calc(100vw - 2rem);
 	}*/
+	@media print {
+		.box,
+		header {
+			display: none;
+		}
+		input {
+			min-width: 125px;
+		}
+	}
 </style>
