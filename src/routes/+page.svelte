@@ -9,7 +9,7 @@
 		let newList = [];
 		const list = await Promise.all(
 			words.split('\n').map(async (word) => {
-				let res = await fetch(`https://api.api-ninjas.com/v1/thesaurus?word=${word}`, {
+				let res = await fetch(`https://thesaurus.grahamsh.workers.dev/${word}`, {
 					headers: {
 						'X-Api-Key': 'HbOUeqXSM5JLJovbPqRz4Q==yMlBTFYhfm5eLqQc'
 					}
@@ -45,7 +45,7 @@
 
 <div class="container">
 	<header class="mb-2">
-		<h1 class="title has-text-primary is-2">Definitions</h1>
+		<h1 class="title has-text-primary is-2">Definitions 📙</h1>
 	</header>
 	<main>
 		<div class="box">
@@ -70,10 +70,10 @@
 						><a target="_blank" href={`https://thesaurus.com/browse/${word.word}`}>{word.word}</a
 						></td
 					>
-					<td><input class="input" type="text" bind:value={word.synonyms[0]} /></td>
-					<td><input class="input" type="text" bind:value={word.synonyms[1]} /></td>
-					<td><input class="input" type="text" bind:value={word.antonyms[0]} /></td>
-					<td><input class="input" type="text" bind:value={word.antonyms[1]} /></td>
+					<td><input class="input" type="text" bind:value={word.synonyms[0].targetWord} /></td>
+					<td><input class="input" type="text" bind:value={word.synonyms[1].targetWord} /></td>
+					<td><input class="input" type="text" bind:value={word.antonyms[0].targetWord} /></td>
+					<td><input class="input" type="text" bind:value={word.antonyms[1].targetWord} /></td>
 					<td
 						><input
 							class="input"
