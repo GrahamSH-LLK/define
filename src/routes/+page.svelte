@@ -9,6 +9,7 @@
 		let newList = [];
 		const list = await Promise.all(
 			words.split('\n').map(async (word) => {
+				try {
 				let res = await fetch(`https://thesaurus.grahamsh.workers.dev/${word}`, {
 					headers: {
 						'X-Api-Key': 'HbOUeqXSM5JLJovbPqRz4Q==yMlBTFYhfm5eLqQc'
@@ -16,6 +17,7 @@
 				});
 
 				return res.json();
+				}catch{}
 			})
 		);
 		defList = await Promise.all(
