@@ -10,14 +10,14 @@
 		const list = await Promise.all(
 			words.split('\n').map(async (word) => {
 				try {
-				let res = await fetch(`https://thesaurus.grahamsh.workers.dev/${word}`, {
-					headers: {
-						'X-Api-Key': 'HbOUeqXSM5JLJovbPqRz4Q==yMlBTFYhfm5eLqQc'
-					}
-				});
+					let res = await fetch(`https://thesaurus.grahamsh.workers.dev/${word}`, {
+						headers: {
+							'X-Api-Key': 'HbOUeqXSM5JLJovbPqRz4Q==yMlBTFYhfm5eLqQc'
+						}
+					});
 
-				return res.json();
-				}catch{}
+					return res.json();
+				} catch {}
 			})
 		);
 		defList = await Promise.all(
@@ -72,26 +72,26 @@
 						><a target="_blank" href={`https://thesaurus.com/browse/${word.word}`}>{word.word}</a
 						></td
 					>
-					<td><input class="input" type="text" bind:value={word.synonyms[0].targetWord} /></td>
-					<td><input class="input" type="text" bind:value={word.synonyms[1].targetWord} /></td>
-					<td><input class="input" type="text" bind:value={word.antonyms[0].targetWord} /></td>
-					<td><input class="input" type="text" bind:value={word.antonyms[1].targetWord} /></td>
+					<td><span class="copy-only">{word.synonyms[0].targetWord}</span><input class="input" type="text" bind:value={word.synonyms[0].targetWord} /></td>
+					<td><span class="copy-only">{word.synonyms[1].targetWord}</span><input class="input" type="text" bind:value={word.synonyms[1].targetWord} /></td>
+					<td><span class="copy-only">{word.antonyms[0].targetWord}</span><input class="input" type="text" bind:value={word.antonyms[0].targetWord} /></td>
+					<td><span class="copy-only">{word.antonyms[1].targetWord}</span><input class="input" type="text" bind:value={word.antonyms[1].targetWord} /></td>
 					<td
-						><input
+						><span class="copy-only">{defList[idx][0].meanings[0].partOfSpeech}</span><input
 							class="input"
 							type="text"
 							bind:value={defList[idx][0].meanings[0].partOfSpeech}
 						/>
 					</td>
 					<td
-						><textarea
+						><span class="copy-only">{defList[idx][0].meanings[0].definitions[0].definition}</span><textarea
 							class="textarea"
 							style="max-width: 400px; min-width: 250px;"
 							bind:value={defList[idx][0].meanings[0].definitions[0].definition}
 						/>
 					</td>
 					<td
-						><textarea class="textarea" style="min-width: 250px" bind:value={word.sentence} />
+						><span class="copy-only">{word.sentence ? word.sentence : ''}</span><textarea class="textarea" style="min-width: 250px" bind:value={word.sentence} />
 					</td>
 				</tr>
 			{/each}
@@ -110,7 +110,21 @@
 			display: none;
 		}
 		input {
-			min-width: 125px;
+			display: none;
 		}
+		textarea {display:none;}
 	}
+	@media not print {
+	.copy-only{
+	position: absolute;
+width: 1px;
+height: 1px;
+padding: 0;
+margin: -1px;
+overflow: hidden;
+clip: rect(0, 0, 0, 0);
+white-space: nowrap;
+border-width: 0;
+	}}
+
 </style>
