@@ -5,6 +5,7 @@
 	let words = '';
 	let wordList = [];
 	let defList = [];
+	let tableEl;
 	const check = async () => {
 		let newList = [];
 		const list = await Promise.all(
@@ -43,12 +44,24 @@
 			localStorage.setItem('words', words);
 		}
 	}
+	let copying = false;
+	const wait = (x) => { return new Promise((resolve) => {
+		setTimeout(()=> {resolve(true)}, x)
+	})};
+	const copy = async() => {
+		copying = true;
+		await wait(0);
+		const spreadSheetRow = new Blob([tableEl.outerHTML], { type: 'text/html' });
+		navigator.clipboard.write([new ClipboardItem({ 'text/html': spreadSheetRow })]);
+		copying = false;
+	};
 </script>
 
 <div class="container">
 	<header class="mb-2">
 		<h1 class="title has-text-primary is-2">Definitions 📙</h1>
 	</header>
+
 	<main>
 		<div class="box">
 			<h3 class="title is-5">Add your words</h3>
@@ -58,8 +71,11 @@
 			<div class="field">
 				<button class="button is-primary" on:click={check}>Get definitions</button>
 			</div>
+			<div class="field">
+				<button class="button is-primary" on:click={copy}>Copy</button>
+			</div>
 		</div>
-		<table class="table">
+		<table class="table" bind:this={tableEl}>
 			<thead
 				><tr
 					><th>Word</th><th>Synonym</th><th>Synonym</th><th>Antonym</th><th>Antonym</th>
@@ -72,26 +88,65 @@
 						><a target="_blank" href={`https://thesaurus.com/browse/${word.word}`}>{word.word}</a
 						></td
 					>
-					<td><span class="copy-only">{word.synonyms[0].targetWord}</span><input class="input" type="text" bind:value={word.synonyms[0].targetWord} /></td>
-					<td><span class="copy-only">{word.synonyms[1].targetWord}</span><input class="input" type="text" bind:value={word.synonyms[1].targetWord} /></td>
-					<td><span class="copy-only">{word.antonyms[0].targetWord}</span><input class="input" type="text" bind:value={word.antonyms[0].targetWord} /></td>
-					<td><span class="copy-only">{word.antonyms[1].targetWord}</span><input class="input" type="text" bind:value={word.antonyms[1].targetWord} /></td>
 					<td
-						><span class="copy-only">{defList[idx][0].meanings[0].partOfSpeech}</span><input
+						><span class="copy-only">{word.synonyms[0].targetWord}</span><input
 							class="input"
 							type="text"
-							bind:value={defList[idx][0].meanings[0].partOfSpeech}
-						/>
+							bind:value={word.synonyms[0].targetWord}
+						/></td
+					>
+					<td
+						><span class="copy-only">{word.synonyms[1].targetWord}</span><input
+							class="input"
+							type="text"
+							bind:value={word.synonyms[1].targetWord}
+						/></td
+					>
+					<td
+						><span class="copy-only">{word.antonyms[0].targetWord}</span><input
+							class="input"
+							type="text"
+							bind:value={word.antonyms[0].targetWord}
+						/></td
+					>
+					<td
+						><span class="copy-only">{word.antonyms[1].targetWord}</span><input
+							class="input"
+							type="text"
+							bind:value={word.antonyms[1].targetWord}
+						/></td
+					>
+					<td>
+						{#if !copying}
+						<div class="select">
+							<select bind:value={defList[idx][0].currPOS}>
+								{#each defList[idx][0].meanings as meaning, i}
+									<option value={i}>{meaning.partOfSpeech}</option>
+								{/each}
+							</select>
+						</div>
+						{/if}
+						<span class="copy-only"
+							>{defList[idx][0].meanings[defList[idx][0].currPOS || 0].partOfSpeech}</span
+						>
 					</td>
 					<td
-						><span class="copy-only">{defList[idx][0].meanings[0].definitions[0].definition}</span><textarea
+						><span class="copy-only"
+							>{defList[idx][0].meanings[defList[idx][0].currPOS || 0].definitions[0]
+								.definition}</span
+						><textarea
 							class="textarea"
 							style="max-width: 400px; min-width: 250px;"
-							bind:value={defList[idx][0].meanings[0].definitions[0].definition}
+							bind:value={defList[idx][0].meanings[defList[idx][0].currPOS || 0].definitions[0]
+								.definition}
 						/>
 					</td>
 					<td
-						><span class="copy-only">{word.sentence ? word.sentence : ''}</span><textarea class="textarea" style="min-width: 250px" bind:value={word.sentence} />
+						><span class="copy-only">{word.sentence ? word.sentence : ''}</span><textarea
+							class="textarea"
+							style="min-width: 250px"
+							bind:value={word.sentence}
+						/>
 					</td>
 				</tr>
 			{/each}
@@ -112,19 +167,22 @@
 		input {
 			display: none;
 		}
-		textarea {display:none;}
+		textarea {
+			display: none;
+		}
 	}
-	@media not print {
-	.copy-only{
-	position: absolute;
-width: 1px;
-height: 1px;
-padding: 0;
-margin: -1px;
-overflow: hidden;
-clip: rect(0, 0, 0, 0);
-white-space: nowrap;
-border-width: 0;
-	}}
 
+	@media not print {
+		.copy-only {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border-width: 0;
+		}
+	}
 </style>
